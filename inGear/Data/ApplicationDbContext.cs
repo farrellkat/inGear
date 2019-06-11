@@ -11,11 +11,13 @@ namespace inGear.Data
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+
         public DbSet<ApplicationUser> ApplicationUsers { get; set; }
         public DbSet<Category> Categories { get; set; }
-        public DbSet<Gear> Inventory { get; set; }
-        public DbSet<PaymentType> PaymentType { get; set; }
-        public DbSet<Order> Order { get; set; }
+        public DbSet<Gear> Gears { get; set; }
+        public DbSet<PaymentType> PaymentTypes { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Condition> Conditions { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -23,7 +25,7 @@ namespace inGear.Data
             // Customize the ASP.NET Identity model and override the defaults if needed.
             // For example, you can rename the ASP.NET Identity table names and more.
             // Add your customizations after calling base.OnModelCreating(builder);
-           
+
 
             modelBuilder.Entity<Category>().HasData(
                 new Category()
@@ -93,7 +95,7 @@ namespace inGear.Data
                 }
             );
 
-            
+
 
             modelBuilder.Entity<Condition>().HasData(
                 new Condition()

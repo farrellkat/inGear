@@ -10,8 +10,8 @@ using inGear.Data;
 namespace inGear.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190611190055_SeedDB")]
-    partial class SeedDB
+    [Migration("20190611203118_addCategoriesConditions")]
+    partial class addCategoriesConditions
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -296,7 +296,7 @@ namespace inGear.Migrations
 
                     b.HasKey("ConditionId");
 
-                    b.ToTable("Condition");
+                    b.ToTable("Conditions");
 
                     b.HasData(
                         new
@@ -331,8 +331,6 @@ namespace inGear.Migrations
                     b.Property<int>("GearId")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("ApplicationUserId");
 
                     b.Property<int>("CategoryId");
 
@@ -369,9 +367,13 @@ namespace inGear.Migrations
 
                     b.HasKey("GearId");
 
-                    b.HasIndex("ApplicationUserId");
+                    b.HasIndex("CategoryId");
 
-                    b.ToTable("Inventory");
+                    b.HasIndex("ConditionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Gears");
                 });
 
             modelBuilder.Entity("inGear.Models.Order", b =>
@@ -380,7 +382,8 @@ namespace inGear.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("ApplicationUserId");
+                    b.Property<string>("BorrowerId")
+                        .IsRequired();
 
                     b.Property<bool>("Completed");
 
@@ -394,14 +397,15 @@ namespace inGear.Migrations
 
                     b.Property<DateTime>("ReturnDate");
 
-                    b.Property<string>("UserId")
-                        .IsRequired();
-
                     b.HasKey("OrderId");
 
-                    b.HasIndex("ApplicationUserId");
+                    b.HasIndex("BorrowerId");
 
-                    b.ToTable("Order");
+                    b.HasIndex("GearId");
+
+                    b.HasIndex("RenterId");
+
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("inGear.Models.PaymentType", b =>
@@ -412,8 +416,6 @@ namespace inGear.Migrations
 
                     b.Property<string>("AccountNumber")
                         .IsRequired();
-
-                    b.Property<string>("ApplicationUserId");
 
                     b.Property<string>("CardType")
                         .IsRequired();
@@ -429,9 +431,9 @@ namespace inGear.Migrations
 
                     b.HasKey("PaymentTypeId");
 
-                    b.HasIndex("ApplicationUserId");
+                    b.HasIndex("UserId");
 
-                    b.ToTable("PaymentType");
+                    b.ToTable("PaymentTypes");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -481,23 +483,46 @@ namespace inGear.Migrations
 
             modelBuilder.Entity("inGear.Models.Gear", b =>
                 {
-                    b.HasOne("inGear.Models.ApplicationUser")
-                        .WithMany("Inventory")
-                        .HasForeignKey("ApplicationUserId");
+                    b.HasOne("inGear.Models.Category", "Category")
+                        .WithMany("Gears")
+                        .HasForeignKey("CategoryId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("inGear.Models.Condition", "Condition")
+                        .WithMany("Gears")
+                        .HasForeignKey("ConditionId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("inGear.Models.ApplicationUser", "User")
+                        .WithMany("Gears")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("inGear.Models.Order", b =>
                 {
-                    b.HasOne("inGear.Models.ApplicationUser")
+                    b.HasOne("inGear.Models.ApplicationUser", "Borrower")
+                        .WithMany("BorrowerOrders")
+                        .HasForeignKey("BorrowerId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("inGear.Models.Gear", "Gear")
                         .WithMany("Orders")
-                        .HasForeignKey("ApplicationUserId");
+                        .HasForeignKey("GearId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("inGear.Models.ApplicationUser", "Renter")
+                        .WithMany("RenterOrders")
+                        .HasForeignKey("RenterId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("inGear.Models.PaymentType", b =>
                 {
-                    b.HasOne("inGear.Models.ApplicationUser")
+                    b.HasOne("inGear.Models.ApplicationUser", "User")
                         .WithMany("PaymentTypes")
-                        .HasForeignKey("ApplicationUserId");
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 #pragma warning restore 612, 618
         }

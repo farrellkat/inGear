@@ -13,8 +13,8 @@ namespace inGear.Models
         public int OrderId { get; set; }
 
         [Required]
-        public string UserId { get; set; }
-        public ApplicationUser User { get; set; }
+        public string BorrowerId { get; set; }
+        public ApplicationUser Borrower { get; set; }
 
         [Required]
         public string RenterId { get; set; }

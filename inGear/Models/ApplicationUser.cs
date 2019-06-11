@@ -39,9 +39,10 @@ namespace inGear.Models
 
         public virtual ICollection<Gear> Gears { get; set; }
 
-        [InverseProperty("UserId")]
-        public virtual ICollection<Order> UserOrders { get; set; }
-        [InverseProperty("RenterId")]
+        [InverseProperty("Borrower")]
+        public virtual ICollection<Order> BorrowerOrders { get; set; }
+
+        [InverseProperty("Renter")]
         public virtual ICollection<Order> RenterOrders { get; set; }
 
         public virtual ICollection<PaymentType> PaymentTypes { get; set; }

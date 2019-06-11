@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using inGear.Data;
 
 namespace inGear.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190611201522_SeedDB")]
+    partial class SeedDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -214,73 +216,6 @@ namespace inGear.Migrations
                     b.HasKey("CategoryId");
 
                     b.ToTable("Categories");
-
-                    b.HasData(
-                        new
-                        {
-                            CategoryId = 1,
-                            Label = "Electric Guitars"
-                        },
-                        new
-                        {
-                            CategoryId = 2,
-                            Label = "Acoustic Guitars"
-                        },
-                        new
-                        {
-                            CategoryId = 3,
-                            Label = "Bass Guitars"
-                        },
-                        new
-                        {
-                            CategoryId = 4,
-                            Label = "Amps"
-                        },
-                        new
-                        {
-                            CategoryId = 5,
-                            Label = "Effects and Pedals"
-                        },
-                        new
-                        {
-                            CategoryId = 6,
-                            Label = "Drums and Percussion"
-                        },
-                        new
-                        {
-                            CategoryId = 7,
-                            Label = "Pro Audio"
-                        },
-                        new
-                        {
-                            CategoryId = 8,
-                            Label = "Keyboards and Synths"
-                        },
-                        new
-                        {
-                            CategoryId = 9,
-                            Label = "DJ and Lighting Gear"
-                        },
-                        new
-                        {
-                            CategoryId = 10,
-                            Label = "Folk"
-                        },
-                        new
-                        {
-                            CategoryId = 11,
-                            Label = "Band and Orchestra"
-                        },
-                        new
-                        {
-                            CategoryId = 12,
-                            Label = "Accessories"
-                        },
-                        new
-                        {
-                            CategoryId = 13,
-                            Label = "Services"
-                        });
                 });
 
             modelBuilder.Entity("inGear.Models.Condition", b =>
@@ -295,33 +230,6 @@ namespace inGear.Migrations
                     b.HasKey("ConditionId");
 
                     b.ToTable("Conditions");
-
-                    b.HasData(
-                        new
-                        {
-                            ConditionId = 1,
-                            Label = "Poor but functioning"
-                        },
-                        new
-                        {
-                            ConditionId = 2,
-                            Label = "Fair but noticable cosmetic damage"
-                        },
-                        new
-                        {
-                            ConditionId = 3,
-                            Label = "Good with minor cosmetic damage"
-                        },
-                        new
-                        {
-                            ConditionId = 4,
-                            Label = "Excellent with no noticable cosmetic damage"
-                        },
-                        new
-                        {
-                            ConditionId = 5,
-                            Label = "Mint condition"
-                        });
                 });
 
             modelBuilder.Entity("inGear.Models.Gear", b =>

@@ -68,7 +68,7 @@ namespace inGear.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Condition",
+                name: "Conditions",
                 columns: table => new
                 {
                     ConditionId = table.Column<int>(nullable: false)
@@ -77,7 +77,7 @@ namespace inGear.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Condition", x => x.ConditionId);
+                    table.PrimaryKey("PK_Conditions", x => x.ConditionId);
                 });
 
             migrationBuilder.CreateTable(
@@ -98,7 +98,7 @@ namespace inGear.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -119,7 +119,7 @@ namespace inGear.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -139,7 +139,7 @@ namespace inGear.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -157,13 +157,13 @@ namespace inGear.Migrations
                         column: x => x.RoleId,
                         principalTable: "AspNetRoles",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_AspNetUserRoles_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -183,11 +183,34 @@ namespace inGear.Migrations
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Inventory",
+                name: "PaymentTypes",
+                columns: table => new
+                {
+                    PaymentTypeId = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    UserId = table.Column<string>(nullable: false),
+                    DateCreated = table.Column<DateTime>(nullable: false),
+                    CardType = table.Column<string>(nullable: false),
+                    AccountNumber = table.Column<string>(nullable: false),
+                    ExpiryDate = table.Column<string>(maxLength: 7, nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PaymentTypes", x => x.PaymentTypeId);
+                    table.ForeignKey(
+                        name: "FK_PaymentTypes_AspNetUsers_UserId",
+                        column: x => x.UserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Gears",
                 columns: table => new
                 {
                     GearId = table.Column<int>(nullable: false)
@@ -205,99 +228,65 @@ namespace inGear.Migrations
                     CategoryId = table.Column<int>(nullable: false),
                     Insurance = table.Column<bool>(nullable: false),
                     Rentable = table.Column<bool>(nullable: false),
-                    Rented = table.Column<bool>(nullable: false),
-                    ApplicationUserId = table.Column<string>(nullable: true)
+                    Rented = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Inventory", x => x.GearId);
+                    table.PrimaryKey("PK_Gears", x => x.GearId);
                     table.ForeignKey(
-                        name: "FK_Inventory_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
+                        name: "FK_Gears_Categories_CategoryId",
+                        column: x => x.CategoryId,
+                        principalTable: "Categories",
+                        principalColumn: "CategoryId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Gears_Conditions_ConditionId",
+                        column: x => x.ConditionId,
+                        principalTable: "Conditions",
+                        principalColumn: "ConditionId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Gears_AspNetUsers_UserId",
+                        column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Order",
+                name: "Orders",
                 columns: table => new
                 {
                     OrderId = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<string>(nullable: false),
+                    BorrowerId = table.Column<string>(nullable: false),
                     RenterId = table.Column<string>(nullable: false),
                     GearId = table.Column<int>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false),
                     ReturnDate = table.Column<DateTime>(nullable: false),
-                    Completed = table.Column<bool>(nullable: false),
-                    ApplicationUserId = table.Column<string>(nullable: true)
+                    Completed = table.Column<bool>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Order", x => x.OrderId);
+                    table.PrimaryKey("PK_Orders", x => x.OrderId);
                     table.ForeignKey(
-                        name: "FK_Order_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
+                        name: "FK_Orders_AspNetUsers_BorrowerId",
+                        column: x => x.BorrowerId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "PaymentType",
-                columns: table => new
-                {
-                    PaymentTypeId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<string>(nullable: false),
-                    DateCreated = table.Column<DateTime>(nullable: false),
-                    CardType = table.Column<string>(nullable: false),
-                    AccountNumber = table.Column<string>(nullable: false),
-                    ExpiryDate = table.Column<string>(maxLength: 7, nullable: true),
-                    ApplicationUserId = table.Column<string>(nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_PaymentType", x => x.PaymentTypeId);
                     table.ForeignKey(
-                        name: "FK_PaymentType_AspNetUsers_ApplicationUserId",
-                        column: x => x.ApplicationUserId,
+                        name: "FK_Orders_Gears_GearId",
+                        column: x => x.GearId,
+                        principalTable: "Gears",
+                        principalColumn: "GearId",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Orders_AspNetUsers_RenterId",
+                        column: x => x.RenterId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
-                });
-
-            migrationBuilder.InsertData(
-                table: "Categories",
-                columns: new[] { "CategoryId", "Label" },
-                values: new object[,]
-                {
-                    { 1, "Electric Guitars" },
-                    { 13, "Services" },
-                    { 12, "Accessories" },
-                    { 11, "Band and Orchestra" },
-                    { 10, "Folk" },
-                    { 8, "Keyboards and Synths" },
-                    { 9, "DJ and Lighting Gear" },
-                    { 6, "Drums and Percussion" },
-                    { 5, "Effects and Pedals" },
-                    { 4, "Amps" },
-                    { 3, "Bass Guitars" },
-                    { 2, "Acoustic Guitars" },
-                    { 7, "Pro Audio" }
-                });
-
-            migrationBuilder.InsertData(
-                table: "Condition",
-                columns: new[] { "ConditionId", "Label" },
-                values: new object[,]
-                {
-                    { 4, "Excellent with no noticable cosmetic damage" },
-                    { 1, "Poor but functioning" },
-                    { 2, "Fair but noticable cosmetic damage" },
-                    { 3, "Good with minor cosmetic damage" },
-                    { 5, "Mint condition" }
                 });
 
             migrationBuilder.CreateIndex(
@@ -340,19 +329,39 @@ namespace inGear.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Inventory_ApplicationUserId",
-                table: "Inventory",
-                column: "ApplicationUserId");
+                name: "IX_Gears_CategoryId",
+                table: "Gears",
+                column: "CategoryId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Order_ApplicationUserId",
-                table: "Order",
-                column: "ApplicationUserId");
+                name: "IX_Gears_ConditionId",
+                table: "Gears",
+                column: "ConditionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_PaymentType_ApplicationUserId",
-                table: "PaymentType",
-                column: "ApplicationUserId");
+                name: "IX_Gears_UserId",
+                table: "Gears",
+                column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_BorrowerId",
+                table: "Orders",
+                column: "BorrowerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_GearId",
+                table: "Orders",
+                column: "GearId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Orders_RenterId",
+                table: "Orders",
+                column: "RenterId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_PaymentTypes_UserId",
+                table: "PaymentTypes",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -373,22 +382,22 @@ namespace inGear.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Categories");
+                name: "Orders");
 
             migrationBuilder.DropTable(
-                name: "Condition");
-
-            migrationBuilder.DropTable(
-                name: "Inventory");
-
-            migrationBuilder.DropTable(
-                name: "Order");
-
-            migrationBuilder.DropTable(
-                name: "PaymentType");
+                name: "PaymentTypes");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
+
+            migrationBuilder.DropTable(
+                name: "Gears");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Conditions");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
