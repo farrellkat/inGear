@@ -12,5 +12,7 @@ namespace inGear.Models
         public int ConditionId { get; set; }
         [Required]
         public string Label { get; set; }
+
+        public virtual ICollection<Gear> Gears { get; set; }
     }
 }

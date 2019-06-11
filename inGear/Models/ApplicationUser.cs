@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -36,9 +37,12 @@ namespace inGear.Models
         [Phone]
         public string Phone { get; set; }
 
-        public virtual ICollection<Gear> Inventory { get; set; }
+        public virtual ICollection<Gear> Gears { get; set; }
 
-        public virtual ICollection<Order> Orders { get; set; }
+        [InverseProperty("UserId")]
+        public virtual ICollection<Order> UserOrders { get; set; }
+        [InverseProperty("RenterId")]
+        public virtual ICollection<Order> RenterOrders { get; set; }
 
         public virtual ICollection<PaymentType> PaymentTypes { get; set; }
     }

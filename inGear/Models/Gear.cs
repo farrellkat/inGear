@@ -13,6 +13,7 @@ namespace inGear.Models
 
         [Required]
         public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
 
         public string Description { get; set; }
 
@@ -27,6 +28,7 @@ namespace inGear.Models
         [Required]
         [Display(Name = "Condition")]
         public int ConditionId { get; set; }
+        public Condition Condition { get; set; }
 
         [Display(Name = "Serial Number")]
         public string SerialNumber { get; set; }
@@ -45,6 +47,7 @@ namespace inGear.Models
         [Required]
         [Display(Name = "Category")]
         public int CategoryId { get; set; }
+        public Category Category { get; set; }
 
         public bool Insurance { get; set; }
 
@@ -52,5 +55,8 @@ namespace inGear.Models
         public bool Rentable { get; set; }
 
         public bool Rented { get; set; }
+
+        public virtual ICollection<Order> Orders { get; set; }
+
     }
 }

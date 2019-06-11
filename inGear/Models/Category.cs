@@ -14,5 +14,7 @@ namespace inGear.Models
         [Required]
         [StringLength(50)]
         public string Label { get; set; }
+
+        public virtual ICollection<Gear> Gears { get; set; }
     }
 }

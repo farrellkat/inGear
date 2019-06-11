@@ -14,12 +14,15 @@ namespace inGear.Models
 
         [Required]
         public string UserId { get; set; }
+        public ApplicationUser User { get; set; }
 
         [Required]
         public string RenterId { get; set; }
+        public ApplicationUser Renter { get; set; }
 
         [Required]
         public int GearId { get; set; }
+        public Gear Gear { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
