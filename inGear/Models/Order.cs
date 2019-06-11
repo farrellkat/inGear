@@ -10,7 +10,7 @@ namespace inGear.Models
     public class Order
     {
         [Key]
-        public int Id { get; set; }
+        public int OrderId { get; set; }
 
         [Required]
         public string UserId { get; set; }

@@ -9,7 +9,6 @@ namespace inGear.Models
     public class Category
     {
         [Key]
-        [Required]
         public int CategoryId { get; set; }
 
         [Required]

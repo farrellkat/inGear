@@ -9,8 +9,7 @@ namespace inGear.Models
     public class Gear
     {
         [Key]
-        [Required]
-        public int Id { get; set; }
+        public int GearId { get; set; }
 
         [Required]
         public string UserId { get; set; }
@@ -26,7 +25,8 @@ namespace inGear.Models
         public string Model { get; set; }
 
         [Required]
-        public int Condition { get; set; }
+        [Display(Name = "Condition")]
+        public int ConditionId { get; set; }
 
         [Display(Name = "Serial Number")]
         public string SerialNumber { get; set; }
