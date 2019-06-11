@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using inGear.Data;
 using inGear.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace inGear.Controllers
 {
@@ -20,6 +21,7 @@ namespace inGear.Controllers
         }
 
         // GET: Gears
+        [Authorize]
         public async Task<IActionResult> Index()
         {
             var applicationDbContext = _context.Gears.Include(g => g.Category).Include(g => g.Condition).Include(g => g.User);
@@ -27,6 +29,7 @@ namespace inGear.Controllers
         }
 
         // GET: Gears/Details/5
+        [Authorize]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -48,6 +51,7 @@ namespace inGear.Controllers
         }
 
         // GET: Gears/Create
+        [Authorize]
         public IActionResult Create()
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Label");
@@ -57,6 +61,7 @@ namespace inGear.Controllers
         }
 
         // POST: Gears/Create
+        [Authorize]
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -76,6 +81,7 @@ namespace inGear.Controllers
         }
 
         // GET: Gears/Edit/5
+        [Authorize]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -95,6 +101,7 @@ namespace inGear.Controllers
         }
 
         // POST: Gears/Edit/5
+        [Authorize]
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -133,6 +140,7 @@ namespace inGear.Controllers
         }
 
         // GET: Gears/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
