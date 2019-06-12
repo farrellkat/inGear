@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace inGear.Data
 {
-    public partial class ApplicationDbContext : IdentityDbContext<IdentityUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
 

@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using inGear.Data;
 using inGear.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
 
 namespace inGear.Controllers
@@ -14,17 +15,35 @@ namespace inGear.Controllers
     public class GearsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public GearsController(ApplicationDbContext context)
+        public GearsController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
+            _userManager = userManager;
             _context = context;
         }
+
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
 
         // GET: Gears
         [Authorize]
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Gears.Include(g => g.Category).Include(g => g.Condition).Include(g => g.User);
+            // Get the current user
+            var user = await GetCurrentUserAsync();
+
+            var applicationDbContext = _context.Gears.Include(g => g.Category).Include(g => g.Condition).Where(g => g.User == user);
+            return View(await applicationDbContext.ToListAsync());
+        }
+
+        // GET: Gears
+        [Authorize]
+        public async Task<IActionResult> Search()
+        {
+            // Get the current user
+            var user = await GetCurrentUserAsync();
+
+            var applicationDbContext = _context.Gears.Include(g => g.Category).Include(g => g.Condition).Where(g => g.User != user);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -37,10 +56,13 @@ namespace inGear.Controllers
                 return NotFound();
             }
 
+            // Get the current user
+            var user = await GetCurrentUserAsync();
+
             var gear = await _context.Gears
                 .Include(g => g.Category)
                 .Include(g => g.Condition)
-                .Include(g => g.User)
+                .Where(g => g.User == user)
                 .FirstOrDefaultAsync(m => m.GearId == id);
             if (gear == null)
             {
@@ -61,7 +83,6 @@ namespace inGear.Controllers
         }
 
         // POST: Gears/Create
-        [Authorize]
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -147,11 +168,13 @@ namespace inGear.Controllers
             {
                 return NotFound();
             }
+            // Get the current user
+            var user = await GetCurrentUserAsync();
 
             var gear = await _context.Gears
                 .Include(g => g.Category)
                 .Include(g => g.Condition)
-                .Include(g => g.User)
+                .Where(g => g.User == user)
                 .FirstOrDefaultAsync(m => m.GearId == id);
             if (gear == null)
             {
@@ -162,6 +185,7 @@ namespace inGear.Controllers
         }
 
         // POST: Gears/Delete/5
+        [Authorize]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
