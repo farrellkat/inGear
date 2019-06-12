@@ -104,7 +104,8 @@
         @Html.DisplayFor(modelItem => item.Rented)
     </td>
     <td>
-        <a asp-action="Details" asp-route-id="@item.GearId">Details</a>
+        <a asp-action="Details" asp-route-id="@item.GearId">Details</a> |
+        <a  href="@Url.Action("Create", "Orders", new {ReservedGearId = item.GearId})">Reserve</a> |
     </td>
 </tr>
 }

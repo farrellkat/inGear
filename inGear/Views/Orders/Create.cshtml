@@ -16,14 +16,15 @@
                 <label asp-for="BorrowerId" class="control-label"></label>
                 <select asp-for="BorrowerId" class ="form-control" asp-items="ViewBag.BorrowerId"></select>
             </div>
-            <div class="form-group">
+            @*<div class="form-group">
                 <label asp-for="RenterId" class="control-label"></label>
                 <select asp-for="RenterId" class ="form-control" asp-items="ViewBag.RenterId"></select>
-            </div>
-            <div class="form-group">
+            </div>*@
+            @*<div class="form-group" hidden>
                 <label asp-for="GearId" class="control-label"></label>
-                <select asp-for="GearId" class ="form-control" asp-items="ViewBag.GearId"></select>
-            </div>
+               @* <select asp-for="GearId" class="form-control" asp-items="ViewBag.GearId"></select>
+                <input asp-for="GearId" class="form-control" value="Viewbag.ReservedGearId"/>
+            </div>*@
             <div class="form-group">
                 <label asp-for="ReturnDate" class="control-label"></label>
                 <input asp-for="ReturnDate" class="form-control" />

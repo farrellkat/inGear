@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using inGear.Data;
 using inGear.Models;
+using Microsoft.AspNetCore.Identity;
 
 namespace inGear.Controllers
 {
@@ -14,11 +15,16 @@ namespace inGear.Controllers
     {
         private readonly ApplicationDbContext _context;
 
-        public OrdersController(ApplicationDbContext context)
+        private readonly UserManager<ApplicationUser> _userManager;
+
+        public OrdersController(ApplicationDbContext ctx,
+                          UserManager<ApplicationUser> userManager)
         {
-            _context = context;
+            _userManager = userManager;
+            _context = ctx;
         }
 
+        private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
         // GET: Orders
         public async Task<IActionResult> Index()
         {
@@ -50,10 +56,11 @@ namespace inGear.Controllers
         // GET: Orders/Create
         public IActionResult Create()
         {
-            ViewData["BorrowerId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
-            ViewData["GearId"] = new SelectList(_context.Gears, "GearId", "Make");
-            ViewData["RenterId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
-            return View();
+            ViewData["BorrowerId"] = new SelectList(_context.ApplicationUsers, "Id", "FirstName");
+            //ViewData["GearId"] = new SelectList(_context.Gears, "GearId", "Make");
+            Order order = new Order();
+            
+            return View(order);
         }
 
         // POST: Orders/Create
@@ -61,8 +68,16 @@ namespace inGear.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderId,BorrowerId,RenterId,GearId,DateCreated,ReturnDate,Completed")] Order order)
+        public async Task<IActionResult> Create(Order order, int ReservedGearId)
+
         {
+
+            ModelState.Remove("RenterId");
+            var user = await GetCurrentUserAsync();
+            order.RenterId = user.Id;
+            order.GearId = ReservedGearId;
+
+
             if (ModelState.IsValid)
             {
                 _context.Add(order);
@@ -70,8 +85,7 @@ namespace inGear.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BorrowerId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", order.BorrowerId);
-            ViewData["GearId"] = new SelectList(_context.Gears, "GearId", "Make", order.GearId);
-            ViewData["RenterId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", order.RenterId);
+            //ViewData["GearId"] = new SelectList(_context.Gears, "GearId", "Make", order.GearId);
             return View(order);
         }
 
