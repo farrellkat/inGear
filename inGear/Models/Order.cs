@@ -13,6 +13,7 @@ namespace inGear.Models
         public int OrderId { get; set; }
 
         [Required]
+        [Display(Name = "Borrowing From")]
         public string BorrowerId { get; set; }
         public ApplicationUser Borrower { get; set; }
 
@@ -29,6 +30,11 @@ namespace inGear.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [Display(Name = "Date Created")]
         public DateTime DateCreated { get; set; }
+
+        [Required]
+        [DataType(DataType.Date)]
+        [Display(Name = "Pickup Date")]
+        public DateTime PickupDate { get; set; }
 
         [Required]
         [DataType(DataType.Date)]

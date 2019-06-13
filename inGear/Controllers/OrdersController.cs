@@ -14,17 +14,16 @@ namespace inGear.Controllers
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
-
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public OrdersController(ApplicationDbContext ctx,
-                          UserManager<ApplicationUser> userManager)
+        public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
-            _context = ctx;
+            _context = context;
         }
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
         // GET: Orders
         public async Task<IActionResult> Index()
         {
@@ -54,12 +53,14 @@ namespace inGear.Controllers
         }
 
         // GET: Orders/Create
-        public IActionResult Create()
+        public IActionResult Create(int ReservedGearId)
         {
             ViewData["BorrowerId"] = new SelectList(_context.ApplicationUsers, "Id", "FirstName");
-            //ViewData["GearId"] = new SelectList(_context.Gears, "GearId", "Make");
+            //ViewBag.gear = _context.Gears.FirstOrDefaultAsync(m => m.GearId == ReservedGearId);
             Order order = new Order();
-            
+            order.PickupDate = DateTime.Now;
+            order.ReturnDate = DateTime.Now;
+            order.GearId = ReservedGearId;
             return View(order);
         }
 
@@ -68,18 +69,19 @@ namespace inGear.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Order order, int ReservedGearId)
+        public async Task<IActionResult> Create([Bind("DateCreated")] Order order)
 
         {
 
             ModelState.Remove("RenterId");
             var user = await GetCurrentUserAsync();
             order.RenterId = user.Id;
-            order.GearId = ReservedGearId;
+            //order.GearId = ReservedGearId;
 
 
             if (ModelState.IsValid)
             {
+                order.DateCreated = DateTime.Now;
                 _context.Add(order);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -113,7 +115,7 @@ namespace inGear.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderId,BorrowerId,RenterId,GearId,DateCreated,ReturnDate,Completed")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("OrderId,BorrowerId,RenterId,GearId,DateCreated,PickupDate,ReturnDate,Completed")] Order order)
         {
             if (id != order.OrderId)
             {
