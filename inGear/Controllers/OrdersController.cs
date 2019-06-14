@@ -8,23 +8,23 @@ using Microsoft.EntityFrameworkCore;
 using inGear.Data;
 using inGear.Models;
 using Microsoft.AspNetCore.Identity;
+using inGear.Models.ViewModels;
 
 namespace inGear.Controllers
 {
     public class OrdersController : Controller
     {
         private readonly ApplicationDbContext _context;
-
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public OrdersController(ApplicationDbContext ctx,
-                          UserManager<ApplicationUser> userManager)
+        public OrdersController(ApplicationDbContext context, UserManager<ApplicationUser> userManager)
         {
             _userManager = userManager;
-            _context = ctx;
+            _context = context;
         }
 
         private Task<ApplicationUser> GetCurrentUserAsync() => _userManager.GetUserAsync(HttpContext.User);
+
         // GET: Orders
         public async Task<IActionResult> Index()
         {
@@ -54,13 +54,27 @@ namespace inGear.Controllers
         }
 
         // GET: Orders/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create(int ReservedGearId)
         {
             ViewData["BorrowerId"] = new SelectList(_context.ApplicationUsers, "Id", "FirstName");
-            //ViewData["GearId"] = new SelectList(_context.Gears, "GearId", "Make");
-            Order order = new Order();
-            
-            return View(order);
+            //ViewBag.gear = _context.Gears.FirstOrDefaultAsync(m => m.GearId == ReservedGearId);
+
+
+
+            GearOrderViewModel ViewModel = new GearOrderViewModel();
+            ViewModel.Order = new Order();
+            ViewModel.Gear = new Gear();
+
+            var gear = await _context.Gears
+                .Include(g => g.Category)
+                .Include(g => g.Condition)
+                .SingleOrDefaultAsync(m => m.GearId == ReservedGearId);
+
+            ViewModel.Gear = gear;
+            ViewModel.Order.GearId = ReservedGearId;
+            ViewModel.Order.PickupDate = DateTime.Now;
+            ViewModel.Order.ReturnDate = DateTime.Now;
+            return View(ViewModel);
         }
 
         // POST: Orders/Create
@@ -68,25 +82,26 @@ namespace inGear.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(Order order, int ReservedGearId)
+        public async Task<IActionResult> Create(GearOrderViewModel ViewModel)
 
         {
 
-            ModelState.Remove("RenterId");
+            ModelState.Remove("Order.RenterId");
             var user = await GetCurrentUserAsync();
-            order.RenterId = user.Id;
-            order.GearId = ReservedGearId;
+            ViewModel.Order.RenterId = user.Id;
+            //order.GearId = ReservedGearId;
+            ViewModel.Order.DateCreated = DateTime.Now;
 
 
             if (ModelState.IsValid)
             {
-                _context.Add(order);
+                _context.Add(ViewModel.Order);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["BorrowerId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", order.BorrowerId);
+            ViewData["BorrowerId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", ViewModel.Order.BorrowerId);
             //ViewData["GearId"] = new SelectList(_context.Gears, "GearId", "Make", order.GearId);
-            return View(order);
+            return View(ViewModel);
         }
 
         // GET: Orders/Edit/5
@@ -113,7 +128,7 @@ namespace inGear.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderId,BorrowerId,RenterId,GearId,DateCreated,ReturnDate,Completed")] Order order)
+        public async Task<IActionResult> Edit(int id, [Bind("OrderId,BorrowerId,RenterId,GearId,DateCreated,PickupDate,ReturnDate,Completed")] Order order)
         {
             if (id != order.OrderId)
             {
