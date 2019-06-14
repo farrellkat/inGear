@@ -1,4 +1,4 @@
-﻿@model inGear.Models.Order
+﻿@model inGear.Models.ViewModels.GearOrderViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -8,31 +8,47 @@
 
 <h4>Order</h4>
 <hr />
+<dt class="col-sm-2">
+    @Html.DisplayNameFor(model => model.Gear.Make)
+</dt>
+<dd class="col-sm-10">
+    @Html.DisplayFor(model => model.Gear.Make)
+</dd>
+<dt class="col-sm-2">
+    @Html.DisplayNameFor(model => model.Gear.Model)
+</dt>
+<dd class="col-sm-10">
+    @Html.DisplayFor(model => model.Gear.Model)
+</dd>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="BorrowerId" class="control-label"></label>
-                <select asp-for="BorrowerId" class="form-control" asp-items="ViewBag.BorrowerId"></select>
-            </div>
             <div class="form-group" hidden>
-                <label asp-for="GearId" class="control-label"></label>
-                <input asp-for="GearId" class="form-control" value="@Model.GearId" />
+                <label asp-for="Order.BorrowerId" class="control-label"></label>
+                <input asp-for="Order.BorrowerId" class="form-control" value="@Model.Gear.UserId" />
+            </div>
+            @*<div class="form-group" hidden>
+                    <label asp-for="Order.RenterId" class="control-label"></label>
+                    <select asp-for="Order.RenterId" class ="form-control" asp-items="ViewBag.RenterId"></select>
+                </div>*@
+            <div class="form-group" hidden>
+                <label asp-for="Order.GearId" class="control-label"></label>
+                <input asp-for="Order.GearId" class="form-control" value="@Model.Gear.GearId" />
             </div>
             <div class="form-group">
-                <label asp-for="PickupDate" class="control-label"></label>
-                <input asp-for="PickupDate" class="form-control" />
-                <span asp-validation-for="PickupDate" class="text-danger"></span>
+                <label asp-for="Order.PickupDate" class="control-label"></label>
+                <input asp-for="Order.PickupDate" class="form-control" />
+                <span asp-validation-for="Order.PickupDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="ReturnDate" class="control-label"></label>
-                <input asp-for="ReturnDate" class="form-control" />
-                <span asp-validation-for="ReturnDate" class="text-danger"></span>
+                <label asp-for="Order.ReturnDate" class="control-label"></label>
+                <input asp-for="Order.ReturnDate" class="form-control" />
+                <span asp-validation-for="Order.ReturnDate" class="text-danger"></span>
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="Completed" /> @Html.DisplayNameFor(model => model.Completed)
+                    <input class="form-check-input" asp-for="Order.Completed" /> @Html.DisplayNameFor(model => model.Order.Completed)
                 </label>
             </div>
             <div class="form-group">
