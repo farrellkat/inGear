@@ -36,8 +36,10 @@ namespace inGear.Models
         [Display(Name = "Image URL")]
         public string ImagePath { get; set; }
 
+        [DataType(DataType.Currency)]
         public double Value { get; set; }
 
+        [DataType(DataType.Currency)]
         [Display(Name = "Rental Price")]
         public double RentalPrice { get; set; }
 

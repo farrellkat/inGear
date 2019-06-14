@@ -74,11 +74,12 @@ namespace inGear.Controllers
 
         // GET: Gears/Create
         [Authorize]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Label");
             ViewData["ConditionId"] = new SelectList(_context.Conditions, "ConditionId", "Label");
-            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
+            var user = await GetCurrentUserAsync();
+            ViewData["UserId"] = user.Id;
             return View();
         }
 

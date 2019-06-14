@@ -92,6 +92,7 @@ namespace inGear.Controllers
             ViewModel.Order.RenterId = user.Id;
             //order.GearId = ReservedGearId;
             ViewModel.Order.DateCreated = DateTime.Now;
+            ViewModel.Gear.Rented = true;
 
 
             if (ModelState.IsValid)
@@ -114,6 +115,20 @@ namespace inGear.Controllers
             }
 
             var order = await _context.Orders.FindAsync(id);
+
+            GearOrderViewModel ViewModel = new GearOrderViewModel();
+            ViewModel.Order = new Order();
+            ViewModel.Gear = new Gear();
+
+            var gear = await _context.Gears
+                .Include(g => g.Category)
+                .Include(g => g.Condition)
+                .Include(g => g.User)
+                .SingleOrDefaultAsync(m => m.GearId == order.GearId);
+
+            ViewModel.Gear = gear;
+            ViewModel.Order = order;
+
             if (order == null)
             {
                 return NotFound();
@@ -121,7 +136,7 @@ namespace inGear.Controllers
             ViewData["BorrowerId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", order.BorrowerId);
             ViewData["GearId"] = new SelectList(_context.Gears, "GearId", "Make", order.GearId);
             ViewData["RenterId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", order.RenterId);
-            return View(order);
+            return View(ViewModel);
         }
 
         // POST: Orders/Edit/5
