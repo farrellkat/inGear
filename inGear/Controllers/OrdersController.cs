@@ -68,6 +68,7 @@ namespace inGear.Controllers
             var gear = await _context.Gears
                 .Include(g => g.Category)
                 .Include(g => g.Condition)
+                .Include(g => g.User)
                 .SingleOrDefaultAsync(m => m.GearId == ReservedGearId);
 
             ViewModel.Gear = gear;

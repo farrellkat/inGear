@@ -13,25 +13,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Borrower)
+                <p class="mb-0">Pickup Address</p>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Renter)
+                @Html.DisplayNameFor(model => model.Gear.Make)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Gear)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateCreated)
+                @Html.DisplayNameFor(model => model.Gear.Model)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.PickupDate)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ReturnDate)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Completed)
             </th>
             <th></th>
         </tr>
@@ -40,25 +34,20 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Borrower.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Renter.Id)
+                <p class="mb-0">@item.Gear.User.StreetAddress</p>
+                <p>@item.Gear.User.City, @item.Gear.User.State @item.Gear.User.ZipCode</p>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Gear.Make)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.DateCreated)
+                @Html.DisplayFor(modelItem => item.Gear.Model)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.PickupDate)
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.ReturnDate)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Completed)
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a> |
