@@ -17,7 +17,7 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group" hidden>
+            <div class="form-group">
                 <label asp-for="Order.BorrowerId" class="control-label"></label>
                 <input asp-for="Order.BorrowerId" class="form-control" value="@Model.Gear.UserId" />
             </div>

@@ -86,17 +86,25 @@ namespace inGear.Controllers
         public async Task<IActionResult> Create(GearOrderViewModel ViewModel)
 
         {
+            
+            var gear = await _context.Gears
+               .Include(g => g.Category)
+               .Include(g => g.Condition)
+               .Include(g => g.User)
+               .SingleOrDefaultAsync(m => m.GearId == ViewModel.Order.GearId);
 
             ModelState.Remove("Order.RenterId");
             var user = await GetCurrentUserAsync();
             ViewModel.Order.RenterId = user.Id;
+            ViewModel.Order.BorrowerId = gear.UserId;
             //order.GearId = ReservedGearId;
             ViewModel.Order.DateCreated = DateTime.Now;
-            ViewModel.Gear.Rented = true;
+            gear.Rented = true;
 
 
             if (ModelState.IsValid)
             {
+                _context.Update(gear);
                 _context.Add(ViewModel.Order);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
