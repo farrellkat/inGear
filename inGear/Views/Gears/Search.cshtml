@@ -13,22 +13,16 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
                 @Html.DisplayNameFor(model => model.Make)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Model)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Condition)
+                @Html.DisplayNameFor(model => model.Description)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.SerialNumber)
+                @Html.DisplayNameFor(model => model.Condition)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.ImagePath)
@@ -45,15 +39,6 @@
             <th>
                 @Html.DisplayNameFor(model => model.Category)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Insurance)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Rentable)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Rented)
-            </th>
             <th></th>
         </tr>
     </thead>
@@ -62,22 +47,16 @@
         {
 <tr>
     <td>
-        @Html.DisplayFor(modelItem => item.User.Email)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.Description)
-    </td>
-    <td>
         @Html.DisplayFor(modelItem => item.Make)
     </td>
     <td>
         @Html.DisplayFor(modelItem => item.Model)
     </td>
     <td>
-        @Html.DisplayFor(modelItem => item.Condition.Label)
+        @Html.DisplayFor(modelItem => item.Description)
     </td>
     <td>
-        @Html.DisplayFor(modelItem => item.SerialNumber)
+        @Html.DisplayFor(modelItem => item.Condition.Label)
     </td>
     <td>
         @Html.DisplayFor(modelItem => item.ImagePath)
@@ -95,17 +74,8 @@
         @Html.DisplayFor(modelItem => item.Category.Label)
     </td>
     <td>
-        @Html.DisplayFor(modelItem => item.Insurance)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.Rentable)
-    </td>
-    <td>
-        @Html.DisplayFor(modelItem => item.Rented)
-    </td>
-    <td>
-        <a asp-action="Details" asp-route-id="@item.GearId">Details</a> |
-        <a  href="@Url.Action("Create", "Orders", new {ReservedGearId = item.GearId})">Reserve</a> |
+        <a asp-action="SearchDetails" asp-route-id="@item.GearId">Details</a> |
+        <a href="@Url.Action("Create", "Orders", new {ReservedGearId = item.GearId})">Reserve</a> |
     </td>
 </tr>
 }

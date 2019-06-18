@@ -16,13 +16,10 @@
                 @Html.DisplayNameFor(model => model.Borrower)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Renter)
+                @Html.DisplayNameFor(model => model.Borrower.StreetAddress)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Gear)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DateCreated)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.PickupDate)
@@ -40,16 +37,14 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Borrower.Id)
+               <p>@item.Borrower.FirstName @item.Borrower.LastName</p>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Renter.Id)
+                <p class="mb-0">@item.Borrower.StreetAddress</p>
+                <p>@item.Borrower.City, @item.Borrower.State @item.Borrower.ZipCode</p>
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Gear.Make)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DateCreated)
+                <p class="mb-0">@item.Gear.Make @item.Gear.Model</p>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.PickupDate)
@@ -69,3 +64,4 @@
 }
     </tbody>
 </table>
+

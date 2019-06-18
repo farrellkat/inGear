@@ -9,6 +9,7 @@ using inGear.Data;
 using inGear.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using inGear.Models.ViewModels;
 
 namespace inGear.Controllers
 {
@@ -32,8 +33,38 @@ namespace inGear.Controllers
             // Get the current user
             var user = await GetCurrentUserAsync();
 
-            var applicationDbContext = _context.Gears.Include(g => g.Category).Include(g => g.Condition).Where(g => g.User == user);
-            return View(await applicationDbContext.ToListAsync());
+            var ViewModel = new MyGearVM
+            {
+                NonRentableGear = new List<Gear>(),
+                RentableGear = new List<Gear>(),
+                RentedGear = new List<Gear>()
+            };
+
+            //var applicationDbContext = _context.Gears.Include(g => g.Category).Include(g => g.Condition).Include(g => g.Orders).Where(g => g.User == user);
+
+            var rentableGear = await _context.Gears
+                 .Include(g => g.Category)
+                 .Include(g => g.Condition)
+                 .Include(g => g.Orders)
+                 .Where(g => g.User == user && g.Rented == false && g.Rentable == true).ToListAsync();
+
+            var rentedGear = await _context.Gears
+                .Include(g => g.Category)
+                .Include(g => g.Condition)
+                .Include(g => g.Orders)
+                .Where(g => g.User == user && g.Rented == true).ToListAsync();
+
+            var nonRentableGear = await _context.Gears
+                .Include(g => g.Category)
+                .Include(g => g.Condition)
+                .Include(g => g.Orders)
+                .Where(g => g.User == user && g.Rentable == false).ToListAsync();
+
+            ViewModel.NonRentableGear = nonRentableGear;
+            ViewModel.RentedGear = rentedGear;
+            ViewModel.RentableGear = rentableGear;
+
+            return View(ViewModel);
         }
 
         // GET: Gears
@@ -43,7 +74,7 @@ namespace inGear.Controllers
             // Get the current user
             var user = await GetCurrentUserAsync();
 
-            var applicationDbContext = _context.Gears.Include(g => g.Category).Include(g => g.Condition).Where(g => g.User != user);
+            var applicationDbContext = _context.Gears.Include(g => g.Category).Include(g => g.Condition).Where(g => g.User != user && g.Rented == false);
             return View(await applicationDbContext.ToListAsync());
         }
 
@@ -62,7 +93,34 @@ namespace inGear.Controllers
             var gear = await _context.Gears
                 .Include(g => g.Category)
                 .Include(g => g.Condition)
-                .Where(g => g.User == user)
+                .Include(g => g.User)
+                //.Where(g => g.User == user)
+                .FirstOrDefaultAsync(m => m.GearId == id);
+            if (gear == null)
+            {
+                return NotFound();
+            }
+
+            return View(gear);
+        }
+
+        // GET: Gears/Details/5
+        [Authorize]
+        public async Task<IActionResult> SearchDetails(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            // Get the current user
+            var user = await GetCurrentUserAsync();
+
+            var gear = await _context.Gears
+                .Include(g => g.Category)
+                .Include(g => g.Condition)
+                .Include(g => g.User)
+                //.Where(g => g.User == user)
                 .FirstOrDefaultAsync(m => m.GearId == id);
             if (gear == null)
             {
@@ -74,11 +132,12 @@ namespace inGear.Controllers
 
         // GET: Gears/Create
         [Authorize]
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
             ViewData["CategoryId"] = new SelectList(_context.Categories, "CategoryId", "Label");
             ViewData["ConditionId"] = new SelectList(_context.Conditions, "ConditionId", "Label");
-            ViewData["UserId"] = new SelectList(_context.ApplicationUsers, "Id", "Id");
+            var user = await GetCurrentUserAsync();
+            ViewData["UserId"] = user.Id;
             return View();
         }
 

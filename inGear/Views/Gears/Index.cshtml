@@ -1,4 +1,4 @@
-﻿@model IEnumerable<inGear.Models.Gear>
+﻿@model inGear.Models.ViewModels.MyGearVM
 
 @{
     ViewData["Title"] = "Index";
@@ -9,105 +9,349 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.User)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Make)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Model)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Condition)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SerialNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ImagePath)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Value)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.RentalPrice)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Quantity)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Category)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Insurance)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Rentable)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Rented)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.User.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Make)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Model)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Condition.Label)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SerialNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ImagePath)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Value)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.RentalPrice)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Quantity)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Category.Label)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Insurance)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rentable)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Rented)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.GearId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.GearId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.GearId">Delete</a>
-            </td>
-        </tr>
+@{
+    if (Model.RentableGear.Count() > 0)
+    {
+        <h4>Available For Rent</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th hidden>
+                        @Html.DisplayNameFor(model => model.Gear.User)
+                    </th>
+                    @*<th>
+                            @Html.DisplayNameFor(model => model.Gear.Description)
+                        </th>*@
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.Make)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.Model)
+                    </th>
+                    @*<th>
+                            @Html.DisplayNameFor(model => model.Gear.Condition)
+                        </th>*@
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.SerialNumber)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.ImagePath)
+                    </th>
+                    @*<th>
+                            @Html.DisplayNameFor(model => model.Gear.Value)
+                        </th>*@
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.RentalPrice)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.Quantity)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.Category)
+                    </th>
+                    @*<th>
+                            @Html.DisplayNameFor(model => model.Gear.Insurance)
+                        </th>*@
+                    @*<th>
+                            @Html.DisplayNameFor(model => model.Gear.Rentable)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Gear.Rented)
+                        </th>*@
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.RentableGear)
+                {
+                    <tr>
+                        <td hidden>
+                            @Html.DisplayFor(modelItem => item.User.Email)
+                        </td>
+                        @*<td>
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </td>*@
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Make)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Model)
+                        </td>
+                        @*<td>
+                                @Html.DisplayFor(modelItem => item.Condition.Label)
+                            </td>*@
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SerialNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ImagePath)
+                        </td>
+                        @*<td asp-format="{0:C}">
+                                @Html.DisplayFor(modelItem => item.Value, "Currency")
+                            </td>*@
+                        <td asp-format="{0:C}">
+                            @Html.DisplayFor(modelItem => item.RentalPrice, "Currency")
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Quantity)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Category.Label)
+                        </td>
+                        @*<td>
+                                @Html.DisplayFor(modelItem => item.Insurance)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Rentable)
+                            </td>*@
+                        @*<td>
+                                @Html.DisplayFor(modelItem => item.Rented)
+                                @{
+                                    if (item.Rented == true)
+                                    {
+                                        <a href="@Url.Action("RentedOutOrders", "Orders", new {ReservedGearId = item.GearId})">View Order</a>
+                                    }
+                                }
+                            </td>*@
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.GearId">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.GearId">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.GearId">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
 }
-    </tbody>
-</table>
+@{
+    if (Model.RentedGear.Count() > 0)
+    {
+        <h4>Currently Rented</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th hidden>
+                        @Html.DisplayNameFor(model => model.Gear.User)
+                    </th>
+                    @*<th>
+                            @Html.DisplayNameFor(model => model.Gear.Description)
+                        </th>*@
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.Make)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.Model)
+                    </th>
+                    @*<th>
+                            @Html.DisplayNameFor(model => model.Gear.Condition)
+                        </th>*@
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.SerialNumber)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.ImagePath)
+                    </th>
+                    @*<th>
+                            @Html.DisplayNameFor(model => model.Gear.Value)
+                        </th>*@
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.RentalPrice)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.Quantity)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.Category)
+                    </th>
+                    @*<th>
+                            @Html.DisplayNameFor(model => model.Gear.Insurance)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Gear.Rentable)
+                        </th>*@
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.Rented)
+                    </th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.RentedGear)
+                {
+                    <tr>
+                        <td hidden>
+                            @Html.DisplayFor(modelItem => item.User.Email)
+                        </td>
+                        @*<td>
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </td>*@
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Make)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Model)
+                        </td>
+                        @*<td>
+                                @Html.DisplayFor(modelItem => item.Condition.Label)
+                            </td>*@
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SerialNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ImagePath)
+                        </td>
+                        @*<td asp-format="{0:C}">
+                                @Html.DisplayFor(modelItem => item.Value, "Currency")
+                            </td>*@
+                        <td asp-format="{0:C}">
+                            @Html.DisplayFor(modelItem => item.RentalPrice, "Currency")
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Quantity)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Category.Label)
+                        </td>
+                        @*<td>
+                                @Html.DisplayFor(modelItem => item.Insurance)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Rentable)
+                            </td>*@
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Rented)
+                            @{
+                                if (item.Rented == true)
+                                {
+                                    <a href="@Url.Action("RentedOutOrders", "Orders", new {ReservedGearId = item.GearId})">View Order</a>
+                                }
+                            }
+                        </td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.GearId">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.GearId">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.GearId">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}
+@{
+    if (Model.NonRentableGear.Count() > 0)
+    {
+
+        <h4>Unvailable For Rent</h4>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th hidden>
+                        @Html.DisplayNameFor(model => model.Gear.User)
+                    </th>
+                    @*<th>
+                            @Html.DisplayNameFor(model => model.Gear.Description)
+                        </th>*@
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.Make)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.Model)
+                    </th>
+                    @*<th>
+                            @Html.DisplayNameFor(model => model.Gear.Condition)
+                        </th>*@
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.SerialNumber)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.ImagePath)
+                    </th>
+                    @*<th>
+                            @Html.DisplayNameFor(model => model.Gear.Value)
+                        </th>*@
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.RentalPrice)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.Quantity)
+                    </th>
+                    <th>
+                        @Html.DisplayNameFor(model => model.Gear.Category)
+                    </th>
+                    @*<th>
+                            @Html.DisplayNameFor(model => model.Gear.Insurance)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Gear.Rentable)
+                        </th>
+                        <th>
+                            @Html.DisplayNameFor(model => model.Gear.Rented)
+                        </th>*@
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.NonRentableGear)
+                {
+                    <tr>
+                        <td hidden>
+                            @Html.DisplayFor(modelItem => item.User.Email)
+                        </td>
+                        @*<td>
+                                @Html.DisplayFor(modelItem => item.Description)
+                            </td>*@
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Make)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Model)
+                        </td>
+                        @*<td>
+                                @Html.DisplayFor(modelItem => item.Condition.Label)
+                            </td>*@
+                        <td>
+                            @Html.DisplayFor(modelItem => item.SerialNumber)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ImagePath)
+                        </td>
+                        @*<td asp-format="{0:C}">
+                                @Html.DisplayFor(modelItem => item.Value, "Currency")
+                            </td>*@
+                        <td asp-format="{0:C}">
+                            @Html.DisplayFor(modelItem => item.RentalPrice, "Currency")
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Quantity)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Category.Label)
+                        </td>
+                        @*<td>
+                                @Html.DisplayFor(modelItem => item.Insurance)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Rentable)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Rented)
+                                @{
+                                    if (item.Rented == true)
+                                    {
+                                        <a href="@Url.Action("RentedOutOrders", "Orders", new {ReservedGearId = item.GearId})">View Order</a>
+                                    }
+                                }
+                            </td>*@
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.GearId">Edit</a> |
+                            <a asp-action="Details" asp-route-id="@item.GearId">Details</a> |
+                            <a asp-action="Delete" asp-route-id="@item.GearId">Delete</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+}

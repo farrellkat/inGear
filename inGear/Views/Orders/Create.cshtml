@@ -6,47 +6,52 @@
 
 <h1>Create</h1>
 
-<h4>Order</h4>
+<h4>New Reservation</h4>
 <hr />
-<dt class="col-sm-2">
-    @Html.DisplayNameFor(model => model.Gear.Make)
-</dt>
+<label class="control-label font-weight-bold">Item</label>
 <dd class="col-sm-10">
     @Html.DisplayFor(model => model.Gear.Make)
-</dd>
-<dt class="col-sm-2">
-    @Html.DisplayNameFor(model => model.Gear.Model)
-</dt>
-<dd class="col-sm-10">
     @Html.DisplayFor(model => model.Gear.Model)
 </dd>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group" hidden>
+            <div class="form-group">
                 <label asp-for="Order.BorrowerId" class="control-label"></label>
                 <input asp-for="Order.BorrowerId" class="form-control" value="@Model.Gear.UserId" />
             </div>
             @*<div class="form-group" hidden>
-                    <label asp-for="Order.RenterId" class="control-label"></label>
-                    <select asp-for="Order.RenterId" class ="form-control" asp-items="ViewBag.RenterId"></select>
-                </div>*@
+            <label asp-for="Order.RenterId" class="control-label"></label>
+            <select asp-for="Order.RenterId" class ="form-control" asp-items="ViewBag.RenterId"></select>
+        </div>*@
             <div class="form-group" hidden>
                 <label asp-for="Order.GearId" class="control-label"></label>
                 <input asp-for="Order.GearId" class="form-control" value="@Model.Gear.GearId" />
             </div>
             <div class="form-group">
-                <label asp-for="Order.PickupDate" class="control-label"></label>
+                <label asp-for="Order.PickupDate" class="control-label font-weight-bold"></label>
                 <input asp-for="Order.PickupDate" class="form-control" />
                 <span asp-validation-for="Order.PickupDate" class="text-danger"></span>
             </div>
+            <label class="control-label font-weight-bold">Pickup From</label>
+            <div>
+                <p class="font-italic mb-0 ml-2">@Model.Gear.User.FirstName @Model.Gear.User.LastName</p>
+                <p class="font-italic mb-0 ml-2">@Model.Gear.User.StreetAddress</p>
+                <p class="font-italic ml-2">@Model.Gear.User.City, @Model.Gear.User.State @Model.Gear.User.ZipCode</p>
+            </div>
+            <div>
+                <p class="font-weight-bold mb-1">Contact</p>
+                <p class="font-italic mb-0 ml-2">@Model.Gear.User.Phone</p>
+                <p class="font-italic ml-2">Email: @Model.Gear.User.Email</p>
+            </div>
+            
             <div class="form-group">
-                <label asp-for="Order.ReturnDate" class="control-label"></label>
+                <label asp-for="Order.ReturnDate" class="control-label font-weight-bold"></label>
                 <input asp-for="Order.ReturnDate" class="form-control" />
                 <span asp-validation-for="Order.ReturnDate" class="text-danger"></span>
             </div>
-            <div class="form-group form-check">
+            <div class="form-group form-check" hidden>
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Order.Completed" /> @Html.DisplayNameFor(model => model.Order.Completed)
                 </label>

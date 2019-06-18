@@ -28,8 +28,92 @@ namespace inGear.Controllers
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Orders.Include(o => o.Borrower).Include(o => o.Gear).Include(o => o.Renter);
+            var user = await GetCurrentUserAsync();
+
+            var applicationDbContext = _context.Orders.Include(o => o.Borrower).Include(o => o.Gear).Include(o => o.Renter).Where(o => o.RenterId == user.Id);
             return View(await applicationDbContext.ToListAsync());
+        }
+
+        // GET: Rented Out Orders
+        public async Task<IActionResult> RentedOutOrders(int ReservedGearId)
+        {
+            ViewData["BorrowerId"] = new SelectList(_context.ApplicationUsers, "Id", "FirstName");
+            //ViewBag.gear = _context.Gears.FirstOrDefaultAsync(m => m.GearId == ReservedGearId);
+
+
+
+            GearOrderViewModel ViewModel = new GearOrderViewModel();
+            ViewModel.Order = new Order();
+            ViewModel.Gear = new Gear();
+
+            var gear = await _context.Gears
+                .Include(g => g.Category)
+                .Include(g => g.Condition)
+                .Include(g => g.User)
+                .SingleOrDefaultAsync(m => m.GearId == ReservedGearId);
+
+            var order = await _context.Orders
+               .Include(o => o.Borrower)
+               .Include(o => o.Gear)
+               .Include(o => o.Renter)
+               .FirstOrDefaultAsync(m => m.GearId == ReservedGearId);
+
+            ViewModel.Gear = gear;
+            ViewModel.Order = order;
+            return View(ViewModel);
+        }
+
+        // Put: RentedOutOrders/put
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+       public async Task<IActionResult> CompleteRentedOutOrders(int id)
+        {
+           var order = await _context.Orders
+               .Include(o => o.Borrower)
+               .Include(o => o.Gear)
+               .Include(o => o.Renter)
+               .FirstOrDefaultAsync(m => m.OrderId == id);
+
+            var gear = await _context.Gears
+                .Include(g => g.Category)
+                .Include(g => g.Condition)
+                .Include(g => g.User)
+                .SingleOrDefaultAsync(m => m.GearId == order.GearId);
+
+            if (id != order.OrderId)
+            {
+                return NotFound();
+            }
+
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    order.Completed = true;
+                    gear.Rented = false;
+                    _context.Update(gear);
+                    _context.Update(order);
+                    await _context.SaveChangesAsync();
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!OrderExists(order.OrderId))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
+                return RedirectToAction(nameof(Index));
+            }
+            ViewData["BorrowerId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", order.BorrowerId);
+            ViewData["GearId"] = new SelectList(_context.Gears, "GearId", "Make", order.GearId);
+            ViewData["RenterId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", order.RenterId);
+            return View(order);
         }
 
         // GET: Orders/Details/5
@@ -68,6 +152,7 @@ namespace inGear.Controllers
             var gear = await _context.Gears
                 .Include(g => g.Category)
                 .Include(g => g.Condition)
+                .Include(g => g.User)
                 .SingleOrDefaultAsync(m => m.GearId == ReservedGearId);
 
             ViewModel.Gear = gear;
@@ -85,16 +170,25 @@ namespace inGear.Controllers
         public async Task<IActionResult> Create(GearOrderViewModel ViewModel)
 
         {
+            
+            var gear = await _context.Gears
+               .Include(g => g.Category)
+               .Include(g => g.Condition)
+               .Include(g => g.User)
+               .SingleOrDefaultAsync(m => m.GearId == ViewModel.Order.GearId);
 
             ModelState.Remove("Order.RenterId");
             var user = await GetCurrentUserAsync();
             ViewModel.Order.RenterId = user.Id;
+            ViewModel.Order.BorrowerId = gear.UserId;
             //order.GearId = ReservedGearId;
             ViewModel.Order.DateCreated = DateTime.Now;
+            gear.Rented = true;
 
 
             if (ModelState.IsValid)
             {
+                _context.Update(gear);
                 _context.Add(ViewModel.Order);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -113,6 +207,21 @@ namespace inGear.Controllers
             }
 
             var order = await _context.Orders.FindAsync(id);
+
+            GearOrderViewModel ViewModel = new GearOrderViewModel();
+            ViewModel.Order = new Order();
+            ViewModel.Gear = new Gear();
+
+            var gear = await _context.Gears
+                .Include(g => g.Category)
+                .Include(g => g.Condition)
+                .Include(g => g.User)
+                .Include(g => g.Orders)
+                .SingleOrDefaultAsync(m => m.GearId == order.GearId);
+
+            ViewModel.Gear = gear;
+            ViewModel.Order = order;
+
             if (order == null)
             {
                 return NotFound();
@@ -120,7 +229,7 @@ namespace inGear.Controllers
             ViewData["BorrowerId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", order.BorrowerId);
             ViewData["GearId"] = new SelectList(_context.Gears, "GearId", "Make", order.GearId);
             ViewData["RenterId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", order.RenterId);
-            return View(order);
+            return View(ViewModel);
         }
 
         // POST: Orders/Edit/5
