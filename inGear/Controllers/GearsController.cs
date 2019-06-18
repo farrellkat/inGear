@@ -104,6 +104,32 @@ namespace inGear.Controllers
             return View(gear);
         }
 
+        // GET: Gears/Details/5
+        [Authorize]
+        public async Task<IActionResult> SearchDetails(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            // Get the current user
+            var user = await GetCurrentUserAsync();
+
+            var gear = await _context.Gears
+                .Include(g => g.Category)
+                .Include(g => g.Condition)
+                .Include(g => g.User)
+                //.Where(g => g.User == user)
+                .FirstOrDefaultAsync(m => m.GearId == id);
+            if (gear == null)
+            {
+                return NotFound();
+            }
+
+            return View(gear);
+        }
+
         // GET: Gears/Create
         [Authorize]
         public async Task<IActionResult> Create()
