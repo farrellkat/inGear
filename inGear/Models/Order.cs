@@ -27,17 +27,20 @@ namespace inGear.Models
 
         [Required]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString ="{0:MM/dd/yy}")]
         //[DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         [Display(Name = "Date Created")]
         public DateTime DateCreated { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yy}")]
         [Display(Name = "Pickup Date")]
         public DateTime PickupDate { get; set; }
 
         [Required]
         [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:MM/dd/yy}")]
         [Display(Name = "Return Date")]
         public DateTime ReturnDate { get; set; }
 

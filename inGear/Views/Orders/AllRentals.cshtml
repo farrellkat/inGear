@@ -1,15 +1,15 @@
 ﻿@model inGear.Models.ViewModels.MyOrdersVM
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "AllRentals";
 }
 
-<h1 class="mb-4 text-center">My Rentals</h1>
+<h1 class="mb-4 text-center">On Loan</h1>
 
 @*<p>
         <a asp-action="Create">Create New</a>
     </p>*@
-<h4>Open Rentals</h4>
+<h4>Open Orders</h4>
 <table class="table table-hover">
     <thead>
         <tr class="table-primary">
@@ -31,37 +31,49 @@
             <th>
                 @Html.DisplayNameFor(model => model.Order.Gear.RentalPrice)
             </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Order.Gear.Rented)
+            </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var item in Model.OpenOrders)
         {
-            <tr>
-                <td>
-                    <p>@item.Borrower.FirstName @item.Borrower.LastName</p>
-                </td>
-                <td>
-                    <p class="mb-0">@item.Borrower.StreetAddress</p>
-                    <p>@item.Borrower.City, @item.Borrower.State @item.Borrower.ZipCode</p>
-                </td>
-                <td>
-                    <p class="mb-0">@item.Gear.Make @item.Gear.Model</p>
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.PickupDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.ReturnDate)
-                </td>
-                <td>
-                    @Html.DisplayFor(model => item.Gear.RentalPrice)
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.OrderId">Details</a>
-                </td>
-            </tr>
+        <tr>
+            <td>
+                <p>@item.Borrower.FirstName @item.Borrower.LastName</p>
+            </td>
+            <td>
+                <p class="mb-0">@item.Borrower.StreetAddress</p>
+                <p>@item.Borrower.City, @item.Borrower.State @item.Borrower.ZipCode</p>
+            </td>
+            <td>
+                <p class="mb-0">@item.Gear.Make @item.Gear.Model</p>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PickupDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ReturnDate)
+            </td>
+            <td>
+                @Html.DisplayFor(model => item.Gear.RentalPrice)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Gear.Rented)
+                @{
+                    if (item.Gear.Rented == true)
+                    {
+                        <a href="@Url.Action("RentedOutOrders", "Orders", new {ReservedGearId = item.GearId})">View Order</a>
+                    }
+                }
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.OrderId">Details</a>
+            </td>
+        </tr>
         }
     </tbody>
 </table>
@@ -81,7 +93,7 @@
         </tr>
     </tbody>
 </table>
-<h4>Completed Rentals</h4>
+<h4>Completed Orders</h4>
 <table class="table table-hover">
     <thead>
         <tr class="table-success">

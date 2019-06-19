@@ -28,10 +28,79 @@ namespace inGear.Controllers
         // GET: Orders
         public async Task<IActionResult> Index()
         {
+            // Get the current user
             var user = await GetCurrentUserAsync();
 
-            var applicationDbContext = _context.Orders.Include(o => o.Borrower).Include(o => o.Gear).Include(o => o.Renter).Where(o => o.RenterId == user.Id);
-            return View(await applicationDbContext.ToListAsync());
+            var ViewModel = new MyOrdersVM
+            {
+                OpenOrders = new List<Order>(),
+                ClosedOrders = new List<Order>(),
+            };
+
+          
+            //var applicationDbContext = _context.Gears.Include(g => g.Category).Include(g => g.Condition).Include(g => g.Orders).Where(g => g.User == user);
+
+            var openOrders = await _context.Orders
+                 .Include(o => o.Gear)
+                 .Include(o => o.Borrower)
+                 .Where(o => o.Renter == user && o.Completed == false).ToListAsync();
+
+            var closedOrders = await _context.Orders
+                 .Include(o => o.Gear)
+                 .Include(o => o.Borrower)
+                 .Where(o => o.Renter == user && o.Completed == true).ToListAsync();
+
+            ViewModel.OpenOrdersTotal = openOrders.Sum(c => c.Gear.RentalPrice);
+            ViewModel.ClosedOrdersTotal = closedOrders.Sum(c => c.Gear.RentalPrice);
+
+            ViewModel.OpenOrders = openOrders;
+            ViewModel.ClosedOrders = closedOrders;
+
+            return View(ViewModel);
+
+
+            //var user = await GetCurrentUserAsync();
+
+            //var applicationDbContext = _context.Orders.Include(o => o.Borrower).Include(o => o.Gear).Include(o => o.Renter).Where(o => o.RenterId == user.Id);
+            //return View(await applicationDbContext.ToListAsync());
+        }
+        public async Task<IActionResult> AllRentals()
+        {
+            // Get the current user
+            var user = await GetCurrentUserAsync();
+
+            var ViewModel = new MyOrdersVM
+            {
+                OpenOrders = new List<Order>(),
+                ClosedOrders = new List<Order>(),
+            };
+
+
+            //var applicationDbContext = _context.Gears.Include(g => g.Category).Include(g => g.Condition).Include(g => g.Orders).Where(g => g.User == user);
+
+            var openOrders = await _context.Orders
+                 .Include(o => o.Gear)
+                 .Include(o => o.Borrower)
+                 .Where(o => o.Borrower == user && o.Completed == false).ToListAsync();
+
+            var closedOrders = await _context.Orders
+                 .Include(o => o.Gear)
+                 .Include(o => o.Borrower)
+                 .Where(o => o.Borrower == user && o.Completed == true).ToListAsync();
+
+            ViewModel.OpenOrdersTotal = openOrders.Sum(c => c.Gear.RentalPrice);
+            ViewModel.ClosedOrdersTotal = closedOrders.Sum(c => c.Gear.RentalPrice);
+
+            ViewModel.OpenOrders = openOrders;
+            ViewModel.ClosedOrders = closedOrders;
+
+            return View(ViewModel);
+
+
+            //var user = await GetCurrentUserAsync();
+
+            //var applicationDbContext = _context.Orders.Include(o => o.Borrower).Include(o => o.Gear).Include(o => o.Renter).Where(o => o.RenterId == user.Id);
+            //return View(await applicationDbContext.ToListAsync());
         }
 
         // GET: Rented Out Orders
@@ -81,6 +150,9 @@ namespace inGear.Controllers
                 .Include(g => g.Condition)
                 .Include(g => g.User)
                 .SingleOrDefaultAsync(m => m.GearId == order.GearId);
+                var ViewModel = new GearOrderViewModel();
+                ViewModel.Gear = gear;
+                ViewModel.Order = order;
 
             if (id != order.OrderId)
             {
@@ -108,12 +180,13 @@ namespace inGear.Controllers
                         throw;
                     }
                 }
+
                 return RedirectToAction(nameof(Index));
             }
             ViewData["BorrowerId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", order.BorrowerId);
             ViewData["GearId"] = new SelectList(_context.Gears, "GearId", "Make", order.GearId);
             ViewData["RenterId"] = new SelectList(_context.ApplicationUsers, "Id", "Id", order.RenterId);
-            return View(order);
+            return View(ViewModel);
         }
 
         // GET: Orders/Details/5

@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<h1 class="text-center">Gear Locker</h1>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -13,9 +13,9 @@
     if (Model.RentableGear.Count() > 0)
     {
         <h4>Available For Rent</h4>
-        <table class="table">
+        <table class="table table-hover">
             <thead>
-                <tr>
+                <tr class="table-success">
                     <th hidden>
                         @Html.DisplayNameFor(model => model.Gear.User)
                     </th>
@@ -34,9 +34,9 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Gear.SerialNumber)
                     </th>
-                    <th>
+                    @*<th>
                         @Html.DisplayNameFor(model => model.Gear.ImagePath)
-                    </th>
+                    </th>*@
                     @*<th>
                             @Html.DisplayNameFor(model => model.Gear.Value)
                         </th>*@
@@ -83,9 +83,9 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.SerialNumber)
                         </td>
-                        <td>
+                        @*<td>
                             @Html.DisplayFor(modelItem => item.ImagePath)
-                        </td>
+                        </td>*@
                         @*<td asp-format="{0:C}">
                                 @Html.DisplayFor(modelItem => item.Value, "Currency")
                             </td>*@
@@ -128,9 +128,9 @@
     if (Model.RentedGear.Count() > 0)
     {
         <h4>Currently Rented</h4>
-        <table class="table">
+        <table class="table table-hover">
             <thead>
-                <tr>
+                <tr class="table-warning">
                     <th hidden>
                         @Html.DisplayNameFor(model => model.Gear.User)
                     </th>
@@ -149,10 +149,10 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Gear.SerialNumber)
                     </th>
-                    <th>
+                    @*<th>
                         @Html.DisplayNameFor(model => model.Gear.ImagePath)
                     </th>
-                    @*<th>
+                    <th>
                             @Html.DisplayNameFor(model => model.Gear.Value)
                         </th>*@
                     <th>
@@ -198,9 +198,9 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.SerialNumber)
                         </td>
-                        <td>
+                        @*<td>
                             @Html.DisplayFor(modelItem => item.ImagePath)
-                        </td>
+                        </td>*@
                         @*<td asp-format="{0:C}">
                                 @Html.DisplayFor(modelItem => item.Value, "Currency")
                             </td>*@
@@ -244,9 +244,9 @@
     {
 
         <h4>Unvailable For Rent</h4>
-        <table class="table">
+        <table class="table table-hover">
             <thead>
-                <tr>
+                <tr class="table-danger">
                     <th hidden>
                         @Html.DisplayNameFor(model => model.Gear.User)
                     </th>
@@ -265,9 +265,9 @@
                     <th>
                         @Html.DisplayNameFor(model => model.Gear.SerialNumber)
                     </th>
-                    <th>
+                    @*<th>
                         @Html.DisplayNameFor(model => model.Gear.ImagePath)
-                    </th>
+                    </th>*@
                     @*<th>
                             @Html.DisplayNameFor(model => model.Gear.Value)
                         </th>*@
@@ -314,9 +314,9 @@
                         <td>
                             @Html.DisplayFor(modelItem => item.SerialNumber)
                         </td>
-                        <td>
+                        @*<td>
                             @Html.DisplayFor(modelItem => item.ImagePath)
-                        </td>
+                        </td>*@
                         @*<td asp-format="{0:C}">
                                 @Html.DisplayFor(modelItem => item.Value, "Currency")
                             </td>*@

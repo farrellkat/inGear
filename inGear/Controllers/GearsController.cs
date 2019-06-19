@@ -74,7 +74,7 @@ namespace inGear.Controllers
             // Get the current user
             var user = await GetCurrentUserAsync();
 
-            var applicationDbContext = _context.Gears.Include(g => g.Category).Include(g => g.Condition).Where(g => g.User != user && g.Rented == false);
+            var applicationDbContext = _context.Gears.Include(g => g.Category).Include(g => g.Condition).Where(g => g.User != user && g.Rented == false && g.Rentable == true);
             return View(await applicationDbContext.ToListAsync());
         }
 

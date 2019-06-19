@@ -12,7 +12,7 @@
     <div class="col-md-4">
         <form asp-action="Create">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
+            <div class="form-group" hidden>
                 <label asp-for="UserId" class="control-label"></label>
                 <Input asp-for="@Model.UserId" class="form-control" value="@ViewBag.UserId"/>
             </div>
@@ -40,7 +40,7 @@
                 <input asp-for="SerialNumber" class="form-control" />
                 <span asp-validation-for="SerialNumber" class="text-danger"></span>
             </div>
-            <div class="form-group">
+            <div class="form-group" hidden>
                 <label asp-for="ImagePath" class="control-label"></label>
                 <input asp-for="ImagePath" class="form-control" />
                 <span asp-validation-for="ImagePath" class="text-danger"></span>
@@ -74,7 +74,7 @@
                     <input class="form-check-input" asp-for="Rentable" /> @Html.DisplayNameFor(model => model.Rentable)
                 </label>
             </div>
-            <div class="form-group form-check">
+            <div class="form-group form-check" hidden>
                 <label class="form-check-label">
                     <input class="form-check-input" asp-for="Rented" /> @Html.DisplayNameFor(model => model.Rented)
                 </label>
