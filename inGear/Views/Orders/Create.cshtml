@@ -34,11 +34,6 @@
                 <input asp-for="Order.PickupDate" class="form-control" />
                 <span asp-validation-for="Order.PickupDate" class="text-danger"></span>
             </div>
-            <div class="form-group">
-                <label asp-for="Order.PickupDate.Hour" class="control-label font-weight-bold"></label>
-                <input asp-for="Order.PickupDate.Hour" type="time" class="form-control" />
-                <span asp-validation-for="Order.PickupDate.Hour" class="text-danger"></span>
-            </div>
             <label class="control-label font-weight-bold">Pickup From</label>
             <div>
                 <p class="font-italic mb-0 ml-2">@Model.Gear.User.FirstName @Model.Gear.User.LastName</p>
